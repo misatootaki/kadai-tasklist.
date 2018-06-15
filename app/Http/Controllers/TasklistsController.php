@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Tasklist;  
 
+
+
 class TasklistsController extends Controller
 {
     /**
@@ -15,11 +17,20 @@ class TasklistsController extends Controller
      */
     public function index()
     {
-        $tasklists = Tasklist::all();
-        
-        return view('tasklists.index',[
-            'tasklists'=>$tasklists,
-        ]);
+        $data = [];
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasklists = $user->tasklists()->orderBy('created_at', 'desc')->paginate(10);
+
+            $data = [
+                'user' => $user,
+                'tasklists' => $tasklists,
+            ];
+            $data += $this->counts($user);
+            return view('users.show', $data);
+        }else {
+            return view('welcome');
+        }
     }
 
     /**
@@ -54,7 +65,7 @@ class TasklistsController extends Controller
         $tasklist->content = $request->content;
         $tasklist->save();
         
-        return redirect('/');
+        return redirect('/')->back();
     }
 
     /**
@@ -119,6 +130,10 @@ class TasklistsController extends Controller
         $tasklist = Tasklist::find($id);
         $tasklist->delete();
         
-        return redirect('/');
+        if (\Auth::id() === $tasklist->user_id) {
+            $tasklist->delete();
+        }
+        
+        return redirect('/')->back();
     }
 }
