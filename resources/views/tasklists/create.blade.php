@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+@if (Auth::id() == $tasklist->user_id)
     <h1>タスクリスト新規作成ページ</h1>
     
     <div class="row">
@@ -23,12 +23,18 @@
                 {!! Form::submit('投稿', ['class' => 'btn btn-primary']) !!}
         
             {!! Form::close() !!}
+
+
         </div>
+        
+
         
         
         
     </div>
-    
+@else
+{!! redirect('/'); !!}
+@endif    
     
         
         

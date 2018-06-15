@@ -18,6 +18,10 @@
                     {!! Form::open(['route' => ['tasklists.destroy', $tasklist->id], 'method' => 'delete']) !!}
                         {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs']) !!}
                     {!! Form::close() !!}
+                    
+                    {!! Form::open(['route' => ['tasklists.edit', $tasklist->id], 'method' => 'get']) !!}
+                        {!! Form::submit('Edit', ['class' => 'btn btn-danger btn-xs']) !!}
+                    {!! Form::close() !!}
                 @endif
             </div>
         </div>

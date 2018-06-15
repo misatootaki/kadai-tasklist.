@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+@if (Auth::id() == $tasklist->user_id)
     <h1>id: {{ $tasklist->id }}のタスクリスト編集ページ</h1>
     
     <div class="row">
@@ -27,6 +27,7 @@
 
     {!! Form::close() !!}
 
+
             
             
         </div>
@@ -34,6 +35,8 @@
         
         
     </div>
-    
+@else
+{!! redirect('/'); !!}
+@endif    
     
 @endsection

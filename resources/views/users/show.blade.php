@@ -26,10 +26,11 @@
                           {!! Form::submit('Post', ['class' => 'btn btn-primary btn-block']) !!}
                       </div>
                   {!! Form::close() !!}
-            @endif
-            @if (count($tasklists) > 0)
-                @include('tasklists.tasklists', ['tasklists' => $tasklists])
-            @endif
+            
+                @if (count($tasklists) > 0)
+                    @include('tasklists.tasklists', ['tasklists' => $tasklists])
+                @endif
+            @endif    
         </div>
     </div>
 @endsection

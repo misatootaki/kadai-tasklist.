@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+@if (Auth::id() == $tasklist->user_id)
     <h1>id= {{$tasklist->id }}のタスクリスト詳細ページ</h1>
     
     <table class="table table-bordered">
@@ -31,4 +31,7 @@
     {!! Form::model($tasklist, ['route' => ['tasklists.destroy', $tasklist->id],'method' => 'delete']) !!}
         {!! Form::submit('削除', ['class' => 'btn btn-danger']) !!}
     {!! Form::close() !!}
+@else
+{!! redirect('/'); !!}
+@endif
 @endsection
