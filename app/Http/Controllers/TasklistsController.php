@@ -55,17 +55,19 @@ class TasklistsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'status' =>'required|max:10',
-            'content' => 'required',
+       
+        
+        //new 
+         $this->validate($request, [
+            'content' => 'required|max:191',
         ]);
-        
-        $tasklist = new Tasklist;
-        $tasklist->status = $request->status;
-        $tasklist->content = $request->content;
-        $tasklist->save();
-        
-        return redirect('/')->back();
+
+        $request->user()->tasklists()->create([
+            'content' => $request->content,
+            'status' => $request->status,
+        ]);
+
+        return redirect()->back();
     }
 
     /**
@@ -129,11 +131,7 @@ class TasklistsController extends Controller
     {
         $tasklist = Tasklist::find($id);
         $tasklist->delete();
-        
-        if (\Auth::id() === $tasklist->user_id) {
-            $tasklist->delete();
-        }
-        
-        return redirect('/')->back();
+
+        return redirect('/');
     }
 }

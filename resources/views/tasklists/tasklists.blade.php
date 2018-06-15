@@ -11,6 +11,7 @@
             </div>
             <div>
                 <p>{!! nl2br(e($tasklist->content)) !!}</p>
+                 <p>{!! nl2br(e($tasklist->status)) !!}</p>
             </div>
             <div>
                 @if (Auth::id() == $tasklist->user_id)
