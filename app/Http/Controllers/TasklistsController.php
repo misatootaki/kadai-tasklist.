@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Tasklist;  
+use App\Http\Requests;
 
+use App\Tasklist;
 
 
 class TasklistsController extends Controller
@@ -32,7 +33,7 @@ class TasklistsController extends Controller
             return view('welcome');
         }
     }
-
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -40,9 +41,10 @@ class TasklistsController extends Controller
      */
     public function create()
     {
-        $tasklist = new Tasklist;
         
-        return view('tasklists.create',[
+         $task = new Task;
+
+        return view('tasklists.create', [
             'tasklist' => $tasklist,
         ]);
     }
@@ -55,17 +57,17 @@ class TasklistsController extends Controller
      */
     public function store(Request $request)
     {
-       
-        
-        //new 
-         $this->validate($request, [
+       $this->validate($request, [
             'content' => 'required|max:191',
+            'status' => 'required|max:10',
         ]);
+
 
         $request->user()->tasklists()->create([
             'content' => $request->content,
             'status' => $request->status,
         ]);
+
 
         return redirect()->back();
     }
@@ -78,11 +80,15 @@ class TasklistsController extends Controller
      */
     public function show($id)
     {
-        $tasklist = Tasklist::find($id);
+        $task = Task::find($id);
+        if (\Auth::id() == $task->user_id){
         
-        return view('tasklists.show',[
+        return view('tasklists.show', [
             'tasklist' => $tasklist,
         ]);
+        } else {
+             return redirect('/');
+        }
     }
 
     /**
@@ -93,11 +99,18 @@ class TasklistsController extends Controller
      */
     public function edit($id)
     {
-        $tasklist = Tasklist::find($id);
         
-        return view('tasklists.edit',[
+         $tasklist = Tasklist::find($id);
+          if (\Auth::id() == $tasklist->user_id){
+
+        return view('tasklists.edit', [
             'tasklist' => $tasklist,
-            ]);
+        ]);
+          } else {
+             return redirect('/');
+        }
+        
+        
     }
 
     /**
@@ -108,17 +121,26 @@ class TasklistsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {   
-        $this->validate($request,[
-            'status' => 'required|max:10',
-            'content' => 'required',
+    {
+        
+        $this->validate($request, [ 
+            'content' => 'required|max:191',
+            'status'=> 'required|max:10',
         ]);
+
+
         $tasklist = Tasklist::find($id);
-        $tasklist->status = $request->status;
+         if (\Auth::id() == $tasklist->user_id){
+        
         $tasklist->content = $request->content;
+        $tasklist->status = $request->status;
         $tasklist->save();
         
-        return redirect('/');
+         return redirect('/');
+
+         } 
+            
+        
     }
 
     /**
@@ -129,9 +151,12 @@ class TasklistsController extends Controller
      */
     public function destroy($id)
     {
-        $tasklist = Tasklist::find($id);
-        $tasklist->delete();
+       $tasklist = \App\Tasklist::find($id);
 
+        if (\Auth::id() === $tasklist->user_id) {
+            $tasklist->delete();
+        }
         return redirect('/');
     }
 }
+
